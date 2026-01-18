@@ -41,7 +41,7 @@ Data Access Layer (Model): Entity Framework Core (EF Core), SQL Server
         end
     
         subgraph Data Storage
-            Model <-->|EF Core (ORM)| DB[("SQL Server 資料庫")]
+            Model <-->|EF Core (ORM)| DB["SQL Server 資料庫"]
         end
 ```
 
