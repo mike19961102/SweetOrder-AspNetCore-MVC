@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "填寫收件資訊";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">🚚 填寫收件資訊</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Checkout" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">收件地址</label>
+                            <input type="text" name="shippingAddress" class="form-control" required placeholder="請輸入完整地址..." />
+                        </div>
+
+                        <!-- 這裡未來可以加更多欄位：電話、備註等 -->
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">確認送出訂單</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">回購物車</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

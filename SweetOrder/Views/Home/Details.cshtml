@@ -1,0 +1,103 @@
+﻿@model SweetOrder.Models.Product
+
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container py-5">
+    <!-- 麵包屑導覽 (Breadcrumb) -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none text-muted">首頁</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row align-items-center">
+        <!-- 左邊：大圖片 -->
+        <div class="col-md-6 mb-4">
+            <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "https://via.placeholder.com/600x400" : Model.ImageUrl)"
+                 class="img-fluid rounded shadow-sm w-100"
+                 alt="@Model.Name"
+                 style="object-fit: cover; max-height: 500px;">
+        </div>
+
+        <!-- 右邊：商品資訊 -->
+        <div class="col-md-6">
+            <h1 class="display-5 fw-bold text-dark mb-3">@Model.Name</h1>
+            <p class="badge bg-warning text-dark fs-6 mb-3">@Model.Category</p>
+
+            <h2 class="text-danger fw-bold mb-4">NT$ @Model.Price.ToString("N0")</h2>
+
+            <p class="lead text-muted mb-5">
+                @Model.Description
+                @if (string.IsNullOrEmpty(Model.Description))
+                {
+                    <span>蛋糕由師傅精心製作，選用頂級原料，帶給您最純粹的幸福滋味。適合生日、聚會或犒賞自己的美好時刻。</span>
+                }
+            </p>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <button onclick="addToCart(@Model.Id, '@Model.Name')" class="btn btn-danger btn-lg px-5 rounded-pill shadow-sm">
+                    <i class="fa-solid fa-cart-plus"></i> 加入購物車
+                </button>
+
+                <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">
+                    回列表
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 下方可以放更多詳細介紹或推薦商品 (之後可擴充) -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h4 class="border-bottom pb-2">商品詳細規格</h4>
+            <p class="text-muted mt-3">
+                成分：麵粉、雞蛋、糖、鮮奶油、新鮮水果...<br>
+                保存方式：冷藏 3 天，冷凍 7 天。<br>
+                過敏原資訊：本產品含有蛋奶製品。
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function addToCart(productId, productName) {
+        // 使用 fetch 發送請求給後端 (這就是 AJAX 技術！)
+        // 這樣網頁不會跳轉，使用者體驗更好
+        fetch(`/Cart/AddToCart/${productId}`, {
+            method: 'GET'
+        }).then(response => {
+            if (response.ok) {
+                // 成功後，跳出漂亮的彈窗
+                Swal.fire({
+                    title: '加入成功！',
+                    text: `${productName} 已經放入您的購物車`,
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d63384', // 甜點粉色
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '去結帳',
+                    cancelButtonText: '繼續逛逛'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // 如果按了「去結帳」，就跳轉到購物車頁面
+                        window.location.href = '/Cart/Index';
+                    } else {
+                        // 如果按了「繼續逛逛」，就重新整理頁面 (為了更新 Navbar 上的購物車數量)
+                        // 或是留在原頁也可以
+                        location.reload();
+                    }
+                });
+            } else {
+                Swal.fire('出錯了', '加入購物車失敗，請稍後再試', 'error');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            Swal.fire('出錯了', '網路連線異常', 'error');
+        });
+    }
+</script>

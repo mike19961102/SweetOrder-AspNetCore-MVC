@@ -1,0 +1,70 @@
+﻿@model IEnumerable<SweetOrder.Models.CartItem>
+
+
+@{
+    ViewData["Title"] = "我的購物車";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4 fw-bold text-center">🛒 我的購物車</h2>
+
+    @if (!Model.Any())
+    {
+        // 如果購物車是空的
+        <div class="text-center py-5">
+            <h4 class="text-muted">購物車還沒有蛋糕喔！🍰</h4>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-danger mt-3">去挑選蛋糕</a>
+        </div>
+    }
+    else
+    {
+        
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0 text-center align-middle">
+                    <thead class="bg-light">
+                        <tr>
+                            <th>圖片</th>
+                            <th>商品名稱</th>
+                            <th>單價</th>
+                            <th>數量</th>
+                            <th>小計</th>
+                            <th>功能</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://via.placeholder.com/100" : item.ImageUrl)"
+                                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px;">
+                                </td>
+                                <td class="fw-bold">@item.ProductName</td>
+                                <td>NT$ @item.Price.ToString("N0")</td>
+                                <td>
+                                    <!-- 這裡未來可以做 + - 按鈕 -->
+                                    <span class="badge bg-secondary rounded-pill">@item.Quantity</span>
+                                </td>
+                                <td class="text-danger fw-bold">NT$ @item.SubTotal.ToString("N0")</td>
+                                <td>
+                                    <!-- 刪除按鈕 (先做個樣子，之後可實作) -->
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="alert('刪除功能開發中...')">🗑️</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-footer bg-white text-end p-4">
+                <h4 class="fw-bold">總金額： <span class="text-danger">NT$ @ViewBag.TotalAmount.ToString("N0")</span></h4>
+
+                <div class="mt-3">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary me-2">繼續購物</a>
+                    <a asp-action="Checkout" class="btn btn-danger btn-lg px-5">前往結帳 💳</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

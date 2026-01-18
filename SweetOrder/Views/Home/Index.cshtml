@@ -1,0 +1,100 @@
+﻿@model IEnumerable<SweetOrder.Models.Product>
+@{
+    ViewData["Title"] = "Anywhere.cake 首頁";
+}
+
+<!-- 1. 引入 SweetAlert2 的 CSS (讓彈窗變漂亮) -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+<!-- 1. 英雄區塊 (Hero Section) -->
+<!-- 這裡的背景圖是用 CSS style 設定的 -->
+<div class="p-5 mb-4 bg-light rounded-3 text-center"
+     style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/images/logo.jpg'); background-size:contain; background-position: center;background-repeat:no-repeat;height:400px; color: aliceblue;display: flex;
+        flex-direction: column;justify-content: center;">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">🍰 Anywhere.cake 預約</h1>
+        <p class="col-md-8 fs-4 mx-auto">在意顏值、嚴選口味、高cp值，每一口都是享受</p>
+        <!-- 這個按鈕按下去會滑動到 id="cake-list" 的地方 -->
+        <a href="#cake-list" class="btn btn-danger btn-lg" type="button">立即挑選蛋糕</a>
+    </div>
+</div>
+
+<!-- 2. 蛋糕列表區塊 -->
+<div class="container" id="cake-list">
+    <h2 class="text-center mb-4">✨ 熱門款式推薦</h2>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var cake in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0">
+                    <!-- 修正圖片邏輯：如果 ImageUrl 是空的，顯示預設圖；否則顯示資料庫的圖 -->
+                    <img src="@(string.IsNullOrEmpty(cake.ImageUrl) ? "https://via.placeholder.com/300?text=No+Image" : cake.ImageUrl)"
+                         class="card-img-top" alt="@cake.Name"
+                         style="height: 250px; object-fit: cover;">
+
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-bold">@cake.Name</h5>
+                        <p class="card-text text-muted">@cake.Description</p>
+                        <!-- 顯示金額：N0 代表數字格式，不顯示小數點 -->
+                        <h4 class="text-danger">NT$ @cake.Price.ToString("N0")</h4>
+                    </div>
+
+                    <div class="card-footer bg-transparent border-top-0 pb-3">
+                        <div class="d-grid gap-2">
+                            <!-- 加入購物車按鈕：觸發下方的 addToCart 函式 -->
+                            <button onclick="addToCart(@cake.Id, '@cake.Name')" class="btn btn-outline-danger">
+                                ❤️ 加入購物車
+                            </button>
+
+                            <!-- 新增按鈕：查看詳情 (連到 Products/Details) -->
+                            <a asp-controller="Home" asp-action="Details" asp-route-id="@cake.Id" class="btn btn-sm btn-light">
+                                查看詳情
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!--加入 JavaScript 互動邏輯 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function addToCart(productId, productName) {
+          fetch(`/Cart/AddToCart/${productId}`, {
+              method: 'GET'
+          }).then(response => {
+              if (response.ok) {
+                   @* 成功後，跳出漂亮的彈窗 *@
+                  Swal.fire({
+                      title: '加入成功！',
+                      text: `${productName} 已經放入您的購物車`,
+                      icon: 'success',
+                      showCancelButton: true,
+                      confirmButtonColor: '#d63384',
+                      cancelButtonColor: '#6c757d',
+                      confirmButtonText: '去結帳',
+                      cancelButtonText: '繼續逛逛'
+                  }).then((result) => {
+                      if (result.isConfirmed) {
+                          window.location.href = '/Cart/Index';
+                      } else {
+                          // 如果按了「繼續逛逛」，重新整理頁面以更新數量(選用)
+                          location.reload();
+                      }
+                  });
+              } else {
+                  Swal.fire('出錯了', '加入購物車失敗，請稍後再試', 'error');
+              }
+          }).catch(error => {
+              console.error('Error:', error);
+              Swal.fire('出錯了', '網路連線異常', 'error');
+          });
+      }
+</script>
+
+
+
+
