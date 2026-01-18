@@ -30,19 +30,20 @@ Data Access Layer (Model): Entity Framework Core (EF Core), SQL Server
 
 2.2 架構圖 (Architecture Diagram)
 
-graph TD
-    User[使用者/瀏覽器] <-->|HTTP Request/Response| Controller[Controllers (邏輯層)]
+```mermaid
+    graph TD
+        User[使用者/瀏覽器] <-->|HTTP Request/Response| Controller[Controllers (邏輯層)]
     
-    subgraph Web Server
-        Controller <-->|Binding| Model[Models (資料結構)]
-        Controller -->|Render| View[Views (畫面層)]
-        Controller <-->|Identity API| Auth[身份驗證系統]
-    end
+        subgraph Web Server
+            Controller <-->|Binding| Model[Models (資料結構)]
+            Controller -->|Render| View[Views (畫面層)]
+            Controller <-->|Identity API| Auth[身份驗證系統]
+        end
     
-    subgraph Data Storage
-        Model <-->|EF Core (ORM)| DB[(SQL Server 資料庫)]
-    end
-
+        subgraph Data Storage
+            Model <-->|EF Core (ORM)| DB[(SQL Server 資料庫)]
+        end
+```
 
 3. 資料庫設計 (Database Schema)
 
@@ -50,6 +51,7 @@ graph TD
 
 3.1 實體關聯圖 (ER Diagram)
 
+```mermaid
 erDiagram
     Users ||--o{ Orders : "places"
     Orders ||--|{ OrderDetails : "contains"
@@ -85,7 +87,7 @@ erDiagram
         string CustomMessage "客製化需求"
     }
 
-
+```
 3.2 關鍵設計決策
 
 金額型別：所有價格欄位 (Price, TotalAmount) 均使用 decimal(18,2)，以避免浮點數運算誤差，符合金融計算標準。
