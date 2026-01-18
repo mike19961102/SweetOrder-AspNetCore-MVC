@@ -40,7 +40,7 @@ namespace SweetOrder.Data
                         EmailConfirmed = true
 
                     };
-                    // 建立帳號，密碼設為 "Admin123!" (需符合複雜度)
+                    
                     await userManager.CreateAsync(newAdmin, "admin1102");
 
                     // ★ 把他加入 Admin 角色
