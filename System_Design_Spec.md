@@ -32,16 +32,16 @@ Data Access Layer (Model): Entity Framework Core (EF Core), SQL Server
 
 ```mermaid
     graph TD
-        User[使用者/瀏覽器] <-->|HTTP Request/Response| Controller[Controllers (邏輯層)]
+        User["使用者/瀏覽器"] <-->|HTTP Request/Response| Controller["Controllers (邏輯層)"]
     
         subgraph Web Server
-            Controller <-->|Binding| Model[Models (資料結構)]
-            Controller -->|Render| View[Views (畫面層)]
-            Controller <-->|Identity API| Auth[身份驗證系統]
+            Controller <-->|Binding| Model["Models (資料結構)"]
+            Controller -->|Render| View["Views (畫面層)"]
+            Controller <-->|Identity API| Auth["身份驗證系統"]
         end
     
         subgraph Data Storage
-            Model <-->|EF Core (ORM)| DB[(SQL Server 資料庫)]
+            Model <-->|EF Core (ORM)| DB[("SQL Server 資料庫")]
         end
 ```
 
